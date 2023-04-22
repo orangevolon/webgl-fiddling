@@ -59,8 +59,19 @@ export function drawOnCanvas(canvas) {
   // objects we'll be drawing.
   const buffers = initBuffers(gl);
 
-  // Draw the scene
-  drawScene(gl, programInfo, buffers);
+  // Start rendering the scene
+  render(gl, programInfo, buffers, 0);
+}
+
+function render(gl, programInfo, buffers, squareRotation) {
+  drawScene(gl, programInfo, buffers, squareRotation);
+
+  const rotateStep = 0.1;
+  const nextSquareRotate = squareRotation + rotateStep;
+
+  requestAnimationFrame(() =>
+    render(gl, programInfo, buffers, nextSquareRotate)
+  );
 }
 
 //
