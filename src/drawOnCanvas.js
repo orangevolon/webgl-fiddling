@@ -63,15 +63,15 @@ export function drawOnCanvas(canvas) {
   render(gl, programInfo, buffers, 0);
 }
 
-function render(gl, programInfo, buffers, squareRotation) {
-  drawScene(gl, programInfo, buffers, squareRotation);
+const startTime = Date.now();
 
-  const rotateStep = 0.1;
-  const nextSquareRotate = squareRotation + rotateStep;
+function render(gl, programInfo, buffers) {
+  const millisFromStart = Date.now() - startTime;
+  const cubeRotation = millisFromStart * 0.001;
 
-  requestAnimationFrame(() =>
-    render(gl, programInfo, buffers, nextSquareRotate)
-  );
+  drawScene(gl, programInfo, buffers, cubeRotation);
+
+  requestAnimationFrame(() => render(gl, programInfo, buffers));
 }
 
 //
