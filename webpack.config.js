@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require("path");
 
 module.exports = {
   mode: "development",
@@ -9,5 +9,24 @@ module.exports = {
   },
   devServer: {
     static: "./public",
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(png|jpe?g|gif)$/i,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192,
+              name: '[name].[ext]',
+              outputPath: 'images',
+              publicPath: 'images/',
+              esModule: false,
+            },
+          },
+        ],
+      },
+    ],
   },
 };
