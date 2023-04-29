@@ -1,6 +1,9 @@
 import { initBuffers } from "./initBuffers";
 import { drawScene } from "./drawScene";
-import cubetexture from "../assets/cubetexture.png";
+import videofile from "../assets/video.mp4";
+
+// Will set to true when video can be copied to texture
+let copyVideo = false;
 
 export function drawOnCanvas(canvas) {
   const gl = canvas.getContext("webgl2");
@@ -80,24 +83,30 @@ export function drawOnCanvas(canvas) {
   // objects we'll be drawing.
   const buffers = initBuffers(gl);
 
-  // Load texture
-  const texture = loadTexture(gl, cubetexture);
+  // Init texture and load video
+  const texture = initTexture(gl);
+  const video = setupVideo(videofile);
+
   // Flip image pixels into the bottom-to-top order that WebGL expects.
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
   // Start rendering the scene
-  render(gl, programInfo, buffers, texture);
+  render(gl, programInfo, buffers, texture, video);
 }
 
 const startTime = Date.now();
 
-function render(gl, programInfo, buffers, texture) {
+function render(gl, programInfo, buffers, texture, video) {
   const millisFromStart = Date.now() - startTime;
   const cubeRotation = millisFromStart * 0.001;
 
+  if (copyVideo) {
+    updateTexture(gl, texture, video);
+  }
+
   drawScene(gl, programInfo, buffers, texture, cubeRotation);
 
-  requestAnimationFrame(() => render(gl, programInfo, buffers, texture));
+  requestAnimationFrame(() => render(gl, programInfo, buffers, texture, video));
 }
 
 //
@@ -156,15 +165,14 @@ function loadShader(gl, type, source) {
   return shader;
 }
 
-function loadTexture(gl, url) {
+function initTexture(gl) {
   const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
-  // Because images have to be downloaded over the internet
-  // they might take a moment until they are ready.
-  // Until then put a single pixel in the texture so we can
-  // use it immediately. When the image has finished downloading
-  // we'll update the texture with the contents of the image.
+  // Because video has to be download over the internet
+  // they might take a moment until it's ready so
+  // put a single pixel in the texture so we can
+  // use it immediately.
   const level = 0;
   const internalFormat = gl.RGBA;
   const width = 1;
@@ -185,37 +193,62 @@ function loadTexture(gl, url) {
     pixel
   );
 
-  const image = new Image();
-  image.onload = () => {
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texImage2D(
-      gl.TEXTURE_2D,
-      level,
-      internalFormat,
-      srcFormat,
-      srcType,
-      image
-    );
-
-    // WebGL1 has different requirements for power of 2 images
-    // vs non power of 2 images so check if the image is a
-    // power of 2 in both dimensions
-    if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
-      // Yes, it's a power of 2. Generate mips.
-      gl.generateMipmap(gl.TEXTURE_2D);
-    } else {
-      // No, it's not a power of 2. Turn off mips and set
-      // wrapping to clamp to edge
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    }
-  };
-  image.src = url;
+  // Turn off mips and set  wrapping to clamp to edge so it
+  // will work regardless of the dimensions of the video.
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
   return texture;
 }
 
-function isPowerOf2(value) {
-  return (value & (value - 1)) == 0;
+function updateTexture(gl, texture, video) {
+  if (copyVideo) {
+    copyVideo = false;
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+  }
+}
+
+function setupVideo(url) {
+  const video = document.createElement("video");
+
+  let playing = false;
+  let timeupdate = false;
+
+  video.playsInline = true;
+  video.muted = true;
+  video.loop = true;
+
+  // Waiting for these 2 events ensures
+  // there is data in the video
+
+  video.addEventListener(
+    "playing",
+    () => {
+      playing = true;
+      checkReady();
+    },
+    true
+  );
+
+  video.addEventListener(
+    "timeupdate",
+    () => {
+      timeupdate = true;
+      checkReady();
+    },
+    true
+  );
+
+  video.src = url;
+  video.play();
+
+  function checkReady() {
+    if (playing && timeupdate) {
+      copyVideo = true;
+    }
+  }
+
+  return video;
 }
