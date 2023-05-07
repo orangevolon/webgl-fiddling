@@ -1,13 +1,13 @@
 function initBuffers(gl) {
   const positionBuffer = initPositionBuffer(gl);
+  const colorBuffer = initColorBuffer(gl);
   const normalBuffer = initNormalBuffer(gl);
-  const textureCoordBuffer = initTextureBuffer(gl);
   const indexBuffer = initIndexBuffer(gl);
 
   return {
     position: positionBuffer,
+    color: colorBuffer,
     normal: normalBuffer,
-    textureCoord: textureCoordBuffer,
     indices: indexBuffer,
   };
 }
@@ -109,32 +109,50 @@ function initIndexBuffer(gl) {
   return indexBuffer;
 }
 
-function initTextureBuffer(gl) {
-  const textureCoordBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+function initColorBuffer(gl) {
+  const colors = [
+    // Front face
+    1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0,
 
-  const textureCoordinates = [
-    // Front
-    0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-    // Back
-    0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-    // Top
-    0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-    // Bottom
-    0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-    // Right
-    0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-    // Left
-    0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+    // Back face
+    1.0, 0.0, 0.0, 1.0,
+    1.0, 0.0, 0.0, 1.0,
+    1.0, 0.0, 0.0, 1.0,
+    1.0, 0.0, 0.0, 1.0,
+
+    // Top face
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+
+    // Bottom face
+    0.0, 0.0, 1.0, 1.0,
+    0.0, 0.0, 1.0, 1.0,
+    0.0, 0.0, 1.0, 1.0,
+    0.0, 0.0, 1.0, 1.0,
+
+    // Right face
+    1.0, 1.0, 0.0, 1.0,
+    1.0, 1.0, 0.0, 1.0,
+    1.0, 1.0, 0.0, 1.0,
+    1.0, 1.0, 0.0, 1.0,
+
+    // Left face
+    0.0, 1.0, 1.0, 1.0,
+    0.0, 1.0, 1.0, 1.0,
+    0.0, 1.0, 1.0, 1.0,
+    0.0, 1.0, 1.0, 1.0
   ];
 
-  gl.bufferData(
-    gl.ARRAY_BUFFER,
-    new Float32Array(textureCoordinates),
-    gl.STATIC_DRAW
-  );
+  const colorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
 
-  return textureCoordBuffer;
+  return colorBuffer;
 }
 
 function initNormalBuffer(gl) {

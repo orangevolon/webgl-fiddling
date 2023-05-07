@@ -1,6 +1,6 @@
 import { mat4 } from "gl-matrix";
 
-export function drawScene(gl, programInfo, buffers, texture, cubeRotation) {
+export function drawScene(gl, programInfo, buffers, cubeRotation) {
   gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
   gl.clearDepth(1.0); // Clear everything
   gl.enable(gl.DEPTH_TEST); // Enable depth testing
@@ -67,9 +67,9 @@ export function drawScene(gl, programInfo, buffers, texture, cubeRotation) {
   // buffer into the vertexPosition attribute.
   setPositionAttribute(gl, buffers, programInfo);
 
-  // Tell WebGL how to pull out the texture coordinates from
-  // the texture coordinate buffer into the textureCoord attribute.
-  setTextureAttribute(gl, buffers, programInfo);
+  // Tell WebGL how to pull out the colors from the color buffer
+  // into the vertexColor attribute.
+  setColorAttribute(gl, buffers, programInfo);
 
   // Tell WebGL how to pull out the normals from
   // the normal buffer into the vertexNormal attribute.
@@ -97,12 +97,6 @@ export function drawScene(gl, programInfo, buffers, texture, cubeRotation) {
     false,
     normalMatrix
   );
-
-  // Tell WebGL we want to affect texture unit 0
-  gl.activeTexture(gl.TEXTURE0);
-
-  // Bind the texture to texture unit 0
-  gl.bindTexture(gl.TEXTURE_2D, texture);
 
   // Tell the shader we bound the texture to texture unit 0
   gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
@@ -136,24 +130,26 @@ function setPositionAttribute(gl, buffers, programInfo) {
   gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
 }
 
-// tell webgl how to pull out the texture coordinates from buffer
-function setTextureAttribute(gl, buffers, programInfo) {
-  const num = 2; // every coordinate composed of 2 values
-  const type = gl.FLOAT; // the data in the buffer is 32 bit float
-  const normalize = false; // don't normalize
-  const stride = 0; // how many bytes to get from one set to the next
-  const offset = 0; // how many bytes inside the buffer to start from
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffers.textureCoord);
+// Tell WebGL how to pull out the colors from the color buffer
+// into the vertexColor attribute.
+function setColorAttribute(gl, buffers, programInfo) {
+  const numComponents = 4;
+  const type = gl.FLOAT;
+  const normalize = false;
+  const stride = 0;
+  const offset = 0;
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color);
   gl.vertexAttribPointer(
-    programInfo.attribLocations.textureCoord,
-    num,
+    programInfo.attribLocations.vertexColor,
+    numComponents,
     type,
     normalize,
     stride,
     offset
   );
-  gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
+  gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
 }
+
 
 // Tell WebGL how to pull out the normals from
 // the normal buffer into the vertexNormal attribute.
