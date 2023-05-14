@@ -1,6 +1,6 @@
 import { mat4 } from "gl-matrix";
 
-export function drawScene(gl, programInfo, buffers, cubeRotation) {
+export function drawScene(gl, programInfo, buffers, cubeRotation, size) {
   gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
   gl.clearDepth(1.0); // Clear everything
   gl.enable(gl.DEPTH_TEST); // Enable depth testing
@@ -71,10 +71,6 @@ export function drawScene(gl, programInfo, buffers, cubeRotation) {
   // into the vertexColor attribute.
   setColorAttribute(gl, buffers, programInfo);
 
-  // Tell WebGL how to pull out the normals from
-  // the normal buffer into the vertexNormal attribute.
-  setNormalAttribute(gl, buffers, programInfo);
-
   // Tell WebGL which indices to use to index the vertices
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices);
 
@@ -98,21 +94,17 @@ export function drawScene(gl, programInfo, buffers, cubeRotation) {
     normalMatrix
   );
 
-  // Tell the shader we bound the texture to texture unit 0
-  gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
-
   {
-    const vertexCount = 36;
     const type = gl.UNSIGNED_SHORT;
     const offset = 0;
-    gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
+    gl.drawElements(gl.TRIANGLES, size, type, offset);
   }
 }
 
 // Tell WebGL how to pull out the positions from the position
 // buffer into the vertexPosition attribute.
 function setPositionAttribute(gl, buffers, programInfo) {
-  const numComponents = 3; // pull out 2 values per iteration
+  const numComponents = 3; // pull out 3 values per iteration
   const type = gl.FLOAT; // the data in the buffer is 32bit floats
   const normalize = false; // don't normalize
   const stride = 0; // how many bytes to get from one set of values to the next
@@ -149,7 +141,6 @@ function setColorAttribute(gl, buffers, programInfo) {
   );
   gl.enableVertexAttribArray(programInfo.attribLocations.vertexColor);
 }
-
 
 // Tell WebGL how to pull out the normals from
 // the normal buffer into the vertexNormal attribute.

@@ -1,8 +1,12 @@
 import { createModel } from "./createModel";
 
-function initBuffers(gl) {
-  const { positionBuffer, indexBuffer } = initVerticesBuffer(gl);
-  const colorBuffer = initColorBuffer(gl);
+function initBuffers(gl, model) {
+  const { positionBuffer, indexBuffer, colorBuffer } = initVerticesBuffer(
+    gl,
+    model
+  );
+
+  // TODO: integrate me into model creation
   const normalBuffer = initNormalBuffer(gl);
 
   return {
@@ -13,70 +17,42 @@ function initBuffers(gl) {
   };
 }
 
-function initVerticesBuffer(gl) {
-  // Create buffers
+function initVerticesBuffer(gl, model) {
+  // First, create the position buffer
   const positionBuffer = gl.createBuffer();
-  const indexBuffer = gl.createBuffer();
-
-  // Select the positionBuffer as the one to apply buffer
-  // operations to from here out.
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-
-  // Now create model positions and indices
-  const { positions, indices } = createModel({
-    type: "box",
-    width: 1,
-  });
-
-  // Now pass the list of positions into WebGL to build the
-  // shape. We do this by creating a Float32Array from the
-  // JavaScript array, then use it to fill the current buffer.
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
   gl.bufferData(
-    gl.ELEMENT_ARRAY_BUFFER,
-    new Uint16Array(indices),
+    gl.ARRAY_BUFFER,
+    new Float32Array(model.positions),
     gl.STATIC_DRAW
   );
 
-  return { positionBuffer, indexBuffer };
+  // Now set up the indices for the vertices
+  const indexBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+  gl.bufferData(
+    gl.ELEMENT_ARRAY_BUFFER,
+    new Uint16Array(model.indices),
+    gl.STATIC_DRAW
+  );
+
+  // Now create the color buffer
+  const colorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array(model.colors),
+    gl.STATIC_DRAW
+  );
+
+  return {
+    positionBuffer,
+    indexBuffer,
+    colorBuffer,
+  };
 }
 
 export { initBuffers };
-
-function initColorBuffer(gl) {
-  const colors = [
-    // Front face
-    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0,
-
-    // Back face
-    1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0,
-    1.0,
-
-    // Top face
-    0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0,
-    1.0,
-
-    // Bottom face
-    0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0,
-    1.0,
-
-    // Right face
-    1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-    1.0,
-
-    // Left face
-    0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0,
-    1.0,
-  ];
-
-  const colorBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
-
-  return colorBuffer;
-}
 
 function initNormalBuffer(gl) {
   const normalBuffer = gl.createBuffer();

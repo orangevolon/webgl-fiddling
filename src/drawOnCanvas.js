@@ -1,5 +1,6 @@
 import { initBuffers } from "./initBuffers";
 import { drawScene } from "./drawScene";
+import { createModel } from "./createModel";
 
 export function drawOnCanvas(canvas) {
   const gl = canvas.getContext("webgl2");
@@ -43,7 +44,7 @@ export function drawOnCanvas(canvas) {
     varying highp vec3 vLighting;
 
     void main() {
-      gl_FragColor = vColor * vec4(vLighting, 1.0);
+      gl_FragColor = vColor;
     }
   `;
 
@@ -72,26 +73,29 @@ export function drawOnCanvas(canvas) {
     },
   };
 
-  // Here's where we call the routine that builds all the
-  // objects we'll be drawing.
-  const buffers = initBuffers(gl);
+  const model = createModel({
+    type: "sphere",
+    radius: 1,
+  });
+
+  const buffers = initBuffers(gl, model);
 
   // Flip image pixels into the bottom-to-top order that WebGL expects.
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
   // Start rendering the scene
-  render(gl, programInfo, buffers);
+  render(gl, programInfo, buffers, model.indices.length);
 }
 
 const startTime = Date.now();
 
-function render(gl, programInfo, buffers) {
+function render(gl, programInfo, buffers, size) {
   const millisFromStart = Date.now() - startTime;
   const cubeRotation = millisFromStart * 0.001;
 
-  drawScene(gl, programInfo, buffers, cubeRotation);
+  drawScene(gl, programInfo, buffers, cubeRotation, size);
 
-  requestAnimationFrame(() => render(gl, programInfo, buffers));
+  requestAnimationFrame(() => render(gl, programInfo, buffers, size));
 }
 
 //

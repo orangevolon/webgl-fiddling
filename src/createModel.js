@@ -1,6 +1,8 @@
 import { vec3 } from "gl-matrix";
 import { rotate, translate } from "./transforms";
 
+const VERTEX_DEFAULT_COLOR = [1.0, 1.0, 1.0, 1.0];
+
 function createBox(width) {
   const faces = Array(6)
     .fill()
@@ -47,13 +49,66 @@ function createBox(width) {
   });
 
   const vertices = faces.flat();
-  const positions = vertices.flat();
 
-  return { positions, indices };
+  const positions = vertices.flat();
+  const colors = vertices.flatMap(() => VERTEX_DEFAULT_COLOR);
+
+  return { positions, indices, colors };
 }
 
 function createSphere(radius) {
-  // do nothing yet
+  const phiCount = 20;
+  const thetaCount = 20;
+
+  const vertices = [];
+  const indices = [];
+  const colors = [];
+
+  for (let thetaIndex = 0; thetaIndex < thetaCount; thetaIndex++) {
+    const maxThetaIndex = thetaCount - 1;
+    const theta = (thetaIndex / maxThetaIndex) * Math.PI;
+    const phiRadius = radius * Math.sin(theta);
+    const z = radius * Math.cos(theta);
+
+    for (let phiIndex = 0; phiIndex < phiCount; phiIndex++) {
+      const maxPhiIndex = phiCount - 1;
+      const phi = (phiIndex / maxPhiIndex) * Math.PI * 2;
+      const x = phiRadius * Math.cos(phi);
+      const y = phiRadius * Math.sin(phi);
+
+      const vertex = [x, y, z];
+      vertices.push(vertex);
+      colors.push(VERTEX_DEFAULT_COLOR);
+
+      if (thetaIndex < maxThetaIndex) {
+        const thetaOffset = thetaIndex * phiCount;
+        const vertexIndex = thetaOffset + phiIndex;
+        const rightVertexIndex = thetaOffset + ((phiIndex + 1) % phiCount);
+        const bottomVertexIndex = vertexIndex + phiCount;
+        const bottomRightVertexIndex = rightVertexIndex + phiCount;
+
+        const firstTriangle = [
+          vertexIndex,
+          bottomVertexIndex,
+          bottomRightVertexIndex,
+        ];
+
+        const secondTriangle = [
+          vertexIndex,
+          rightVertexIndex,
+          bottomRightVertexIndex,
+        ];
+
+        indices.push(firstTriangle, secondTriangle);
+      }
+    }
+  }
+
+  return {
+    positions: vertices.flat(),
+    indices: indices.flat(),
+    colors: colors.flat(),
+  };
 }
 
 export function createModel(params) {
