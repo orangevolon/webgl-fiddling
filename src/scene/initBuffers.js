@@ -1,19 +1,4 @@
-import { createModel } from "./createModel";
-
 function initBuffers(gl, model) {
-  const { positionBuffer, indexBuffer, colorBuffer, normalBuffer } =
-    initVerticesBuffer(gl, model);
-
-  return {
-    position: positionBuffer,
-    color: colorBuffer,
-    normal: normalBuffer,
-    indices: indexBuffer,
-  };
-}
-
-function initVerticesBuffer(gl, model) {
-  // First, create the position buffer
   const positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   gl.bufferData(
@@ -22,7 +7,6 @@ function initVerticesBuffer(gl, model) {
     gl.STATIC_DRAW
   );
 
-  // Now set up the indices for the vertices
   const indexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
   gl.bufferData(
@@ -31,7 +15,6 @@ function initVerticesBuffer(gl, model) {
     gl.STATIC_DRAW
   );
 
-  // Now create the color buffer
   const colorBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
   gl.bufferData(
@@ -49,10 +32,10 @@ function initVerticesBuffer(gl, model) {
   );
 
   return {
-    positionBuffer,
-    indexBuffer,
-    colorBuffer,
-    normalBuffer,
+    position: positionBuffer,
+    color: colorBuffer,
+    normal: normalBuffer,
+    indices: indexBuffer,
   };
 }
 
