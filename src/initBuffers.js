@@ -1,13 +1,8 @@
 import { createModel } from "./createModel";
 
 function initBuffers(gl, model) {
-  const { positionBuffer, indexBuffer, colorBuffer } = initVerticesBuffer(
-    gl,
-    model
-  );
-
-  // TODO: integrate me into model creation
-  const normalBuffer = initNormalBuffer(gl);
+  const { positionBuffer, indexBuffer, colorBuffer, normalBuffer } =
+    initVerticesBuffer(gl, model);
 
   return {
     position: positionBuffer,
@@ -45,44 +40,20 @@ function initVerticesBuffer(gl, model) {
     gl.STATIC_DRAW
   );
 
+  const normalBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array(model.normals),
+    gl.STATIC_DRAW
+  );
+
   return {
     positionBuffer,
     indexBuffer,
     colorBuffer,
+    normalBuffer,
   };
 }
 
 export { initBuffers };
-
-function initNormalBuffer(gl) {
-  const normalBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-
-  const vertexNormals = [
-    // Front
-    0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
-
-    // Back
-    0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0,
-
-    // Top
-    0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
-
-    // Bottom
-    0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0,
-
-    // Right
-    1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-
-    // Left
-    -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0,
-  ];
-
-  gl.bufferData(
-    gl.ARRAY_BUFFER,
-    new Float32Array(vertexNormals),
-    gl.STATIC_DRAW
-  );
-
-  return normalBuffer;
-}

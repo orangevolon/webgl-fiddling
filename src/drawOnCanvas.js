@@ -44,7 +44,7 @@ export function drawOnCanvas(canvas) {
     varying highp vec3 vLighting;
 
     void main() {
-      gl_FragColor = vColor;
+      gl_FragColor = vec4(vColor.rgb * vLighting, vColor.a);
     }
   `;
 

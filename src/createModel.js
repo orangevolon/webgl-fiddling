@@ -63,6 +63,7 @@ function createSphere(radius) {
   const vertices = [];
   const indices = [];
   const colors = [];
+  const normals = [];
 
   for (let thetaIndex = 0; thetaIndex < thetaCount; thetaIndex++) {
     const maxThetaIndex = thetaCount - 1;
@@ -79,6 +80,10 @@ function createSphere(radius) {
       const vertex = [x, y, z];
       vertices.push(vertex);
       colors.push(VERTEX_DEFAULT_COLOR);
+
+      const normal = [x, y, z];
+      vec3.normalize(normal, normal);
+      normals.push(normal);
 
       if (thetaIndex < maxThetaIndex) {
         const thetaOffset = thetaIndex * phiCount;
@@ -108,6 +113,7 @@ function createSphere(radius) {
     positions: vertices.flat(),
     indices: indices.flat(),
     colors: colors.flat(),
+    normals: normals.flat(),
   };
 }
 

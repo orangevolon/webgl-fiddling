@@ -63,13 +63,9 @@ export function drawScene(gl, programInfo, buffers, cubeRotation, size) {
   mat4.invert(normalMatrix, modelViewMatrix);
   mat4.transpose(normalMatrix, normalMatrix);
 
-  // Tell WebGL how to pull out the positions from the position
-  // buffer into the vertexPosition attribute.
   setPositionAttribute(gl, buffers, programInfo);
-
-  // Tell WebGL how to pull out the colors from the color buffer
-  // into the vertexColor attribute.
   setColorAttribute(gl, buffers, programInfo);
+  setNormalAttribute(gl, buffers, programInfo);
 
   // Tell WebGL which indices to use to index the vertices
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices);
