@@ -2,7 +2,7 @@ import { translate, rotate } from "../utils/transforms";
 
 export function createBox(width, color) {
   const faces = Array(6)
-    .fill()
+    .fill(0)
     .map(() => [
       [-width / 2, -width / 2, 0],
       [width / 2, -width / 2, 0],
@@ -51,7 +51,7 @@ export function createBox(width, color) {
   const colors = vertices.flatMap(() => color);
 
   // TODO: temporary normal, fix this
-  const normals = positions
+  const normals = positions;
 
   return { positions, indices, colors, normals };
 }

@@ -25,7 +25,7 @@ export function createSphere(radius, color) {
       vertices.push(vertex);
       colors.push(color);
 
-      const normal = [x, y, z];
+      const normal: vec3 = [x, y, z];
       vec3.normalize(normal, normal);
       normals.push(normal);
 

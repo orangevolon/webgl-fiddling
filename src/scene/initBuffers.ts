@@ -1,4 +1,4 @@
-function initBuffers(gl, model) {
+export function initBuffers(gl, model) {
   const positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   gl.bufferData(
@@ -38,5 +38,3 @@ function initBuffers(gl, model) {
     indices: indexBuffer,
   };
 }
-
-export { initBuffers };
