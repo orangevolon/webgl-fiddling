@@ -1,6 +1,8 @@
 import { vec3 } from "gl-matrix";
+import { SphereModelParams } from "./types";
+import { Model } from "../types";
 
-export function createSphere(radius, color) {
+export function createSphere({ radius, color }: SphereModelParams) {
   const phiCount = 20;
   const thetaCount = 20;
 
@@ -23,7 +25,7 @@ export function createSphere(radius, color) {
 
       const vertex = [x, y, z];
       vertices.push(vertex);
-      colors.push(color);
+      colors.push(Array.from(color));
 
       const normal: vec3 = [x, y, z];
       vec3.normalize(normal, normal);
@@ -53,10 +55,12 @@ export function createSphere(radius, color) {
     }
   }
 
-  return {
+  const model: Model = {
     positions: vertices.flat(),
     indices: indices.flat(),
     colors: colors.flat(),
     normals: normals.flat(),
   };
+
+  return model;
 }

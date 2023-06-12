@@ -1,6 +1,8 @@
+import { vec3 } from "gl-matrix";
 import { translate, rotate } from "../utils/transforms";
+import { CubeModelParams } from "./types";
 
-export function createBox(width, color) {
+export function createBox({ width, color }: CubeModelParams) {
   const faces = Array(6)
     .fill(0)
     .map(() => [
@@ -48,7 +50,7 @@ export function createBox(width, color) {
   const vertices = faces.flat();
 
   const positions = vertices.flat();
-  const colors = vertices.flatMap(() => color);
+  const colors = vertices.flatMap(() => Array.from(color));
 
   // TODO: temporary normal, fix this
   const normals = positions;

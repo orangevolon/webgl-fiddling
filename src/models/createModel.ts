@@ -1,17 +1,16 @@
 import { createSphere } from "./createSphere";
 import { createBox } from "./createBox";
+import { ModelParams } from "./types";
+import { vec3 } from "gl-matrix";
+import { Model } from "../types";
 
-const VERTEX_DEFAULT_COLOR = [1.0, 1.0, 1.0, 1.0];
+const VERTEX_DEFAULT_COLOR = vec3.fromValues(1.0, 1.0, 1.0);
 
-export function createModel(params) {
-  const { type, ...modelProps } = params;
-
-  switch (type) {
-    case "box":
-      return createBox(modelProps.width, VERTEX_DEFAULT_COLOR);
+export function createModel(params: ModelParams): Model {
+  switch (params.type) {
+    case "cube":
+      return createBox(params);
     case "sphere":
-      return createSphere(modelProps.radius, VERTEX_DEFAULT_COLOR);
-    default:
-      throw new Error(`Unknown model type: ${type}`);
+      return createSphere(params);
   }
 }
