@@ -1,3 +1,5 @@
+import { vec4 } from "gl-matrix";
+
 export interface Scene {
   gl: WebGL2RenderingContext;
   programInfo: ProgramInfo;
@@ -5,8 +7,14 @@ export interface Scene {
   size: number;
 }
 
+export interface SceneOptions {
+  backgroundColor: vec4;
+}
+
 export interface ViewOptions {
-  rotation: number;
+  rotateX: number;
+  rotateY: number;
+  rotateZ: number;
 }
 
 export interface ProgramInfo {

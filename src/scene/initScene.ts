@@ -1,16 +1,28 @@
+import { vec4 } from "gl-matrix";
 import { Model, ShaderSource } from "../types";
 import { initBuffers } from "./initBuffers";
 import { initShader } from "./initShaders";
-import { ProgramInfo, Scene } from "./types";
+import { ProgramInfo, Scene, SceneOptions } from "./types";
+
+const DEFAULT_OPTIONS: SceneOptions = {
+  backgroundColor: [0.0, 0.0, 0.0, 1.0],
+};
 
 export function initScene(
   canvas: HTMLCanvasElement,
   shaders: ShaderSource,
-  model: Model
+  model: Model,
+  options: SceneOptions = DEFAULT_OPTIONS
 ) {
   const gl = canvas.getContext("webgl2");
 
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  gl.clearColor(
+    options.backgroundColor[0],
+    options.backgroundColor[1],
+    options.backgroundColor[2],
+    options.backgroundColor[3]
+  );
+
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   const shaderProgram = initShader(gl, shaders);

@@ -2,9 +2,17 @@ import { vec3 } from "gl-matrix";
 import { SphereModelParams } from "./types";
 import { Model } from "../types";
 
-export function createSphere({ radius, color }: SphereModelParams) {
-  const phiCount = 20;
-  const thetaCount = 20;
+const DEFAULT_VERTICAL_SEGMENTS = 20;
+const DEFAULT_HORIZONTAL_SEGMENTS = 20;
+
+export function createSphere({
+  radius,
+  color,
+  verticalSegments = DEFAULT_VERTICAL_SEGMENTS,
+  horizontalSegments = DEFAULT_HORIZONTAL_SEGMENTS,
+}: SphereModelParams) {
+  const phiCount = horizontalSegments;
+  const thetaCount = verticalSegments;
 
   const vertices = [];
   const indices = [];
