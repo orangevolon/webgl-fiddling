@@ -1,6 +1,7 @@
 import { mat4 } from "gl-matrix";
+import { Buffers, ProgramInfo, Scene, ViewOptions } from "../types";
 
-export function drawScene(scene, view) {
+export function drawScene(scene: Scene, view: ViewOptions) {
   const { gl, programInfo, buffers, size } = scene;
   const { rotation } = view;
 
@@ -19,6 +20,10 @@ export function drawScene(scene, view) {
   // ratio that matches the display size of the canvas
   // and we only want to see objects between 0.1 units
   // and 100 units away from the camera.
+
+  if (!(gl.canvas instanceof HTMLCanvasElement)) {
+    throw new Error("Invalid canvas type");
+  }
 
   const fieldOfView = (45 * Math.PI) / 180; // in radians
   const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
@@ -102,7 +107,11 @@ export function drawScene(scene, view) {
 
 // Tell WebGL how to pull out the positions from the position
 // buffer into the vertexPosition attribute.
-function setPositionAttribute(gl, buffers, programInfo) {
+function setPositionAttribute(
+  gl: WebGLRenderingContext,
+  buffers: Buffers,
+  programInfo: ProgramInfo
+) {
   const numComponents = 3; // pull out 3 values per iteration
   const type = gl.FLOAT; // the data in the buffer is 32bit floats
   const normalize = false; // don't normalize
@@ -123,7 +132,11 @@ function setPositionAttribute(gl, buffers, programInfo) {
 
 // Tell WebGL how to pull out the colors from the color buffer
 // into the vertexColor attribute.
-function setColorAttribute(gl, buffers, programInfo) {
+function setColorAttribute(
+  gl: WebGLRenderingContext,
+  buffers: Buffers,
+  programInfo: ProgramInfo
+) {
   const numComponents = 4;
   const type = gl.FLOAT;
   const normalize = false;
@@ -143,7 +156,11 @@ function setColorAttribute(gl, buffers, programInfo) {
 
 // Tell WebGL how to pull out the normals from
 // the normal buffer into the vertexNormal attribute.
-function setNormalAttribute(gl, buffers, programInfo) {
+function setNormalAttribute(
+  gl: WebGLRenderingContext,
+  buffers: Buffers,
+  programInfo: ProgramInfo
+) {
   const numComponents = 3;
   const type = gl.FLOAT;
   const normalize = false;

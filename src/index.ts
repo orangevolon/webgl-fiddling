@@ -4,10 +4,12 @@ import { createModel } from "./models/createModel";
 
 import vsSource from "./shaders/vertex.glsl";
 import fsSource from "./shaders/fragment.glsl";
+import { Scene, ShaderSource } from "./types";
+import { vec4 } from "gl-matrix";
 
 const startTime = Date.now();
 
-function render(scene) {
+function render(scene: Scene) {
   const millisFromStart = Date.now() - startTime;
   const view = { rotation: millisFromStart * 0.001 };
   drawScene(scene, view);
@@ -20,10 +22,11 @@ function render(scene) {
   const root = document.querySelector("#root");
   root.appendChild(canvas);
 
-  const shaders = { vsSource, fsSource };
+  const shaders: ShaderSource = { vsSource, fsSource };
   const model = createModel({
     type: "sphere",
     radius: 1,
+    color: vec4.fromValues(1.0, 1.0, 1.0, 1.0),
   });
 
   const scene = initScene(canvas, shaders, model);

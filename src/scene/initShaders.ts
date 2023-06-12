@@ -1,6 +1,8 @@
-export function initShader(gl, vsSource, fsSource) {
-  const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
-  const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
+import { ShaderSource } from "../types";
+
+export function initShader(gl: WebGL2RenderingContext, shaders: ShaderSource) {
+  const vertexShader = loadShader(gl, gl.VERTEX_SHADER, shaders.vsSource);
+  const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, shaders.fsSource);
 
   const shaderProgram = gl.createProgram();
   gl.attachShader(shaderProgram, vertexShader);
@@ -19,7 +21,7 @@ export function initShader(gl, vsSource, fsSource) {
   return shaderProgram;
 }
 
-function loadShader(gl, type, source) {
+function loadShader(gl: WebGL2RenderingContext, type: number, source: string) {
   const shader = gl.createShader(type);
 
   gl.shaderSource(shader, source);

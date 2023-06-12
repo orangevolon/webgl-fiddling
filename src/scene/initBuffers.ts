@@ -1,4 +1,6 @@
-function initBuffers(gl, model) {
+import { Buffers, Model } from "../types";
+
+export function initBuffers(gl: WebGLRenderingContext, model: Model) {
   const positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   gl.bufferData(
@@ -31,12 +33,12 @@ function initBuffers(gl, model) {
     gl.STATIC_DRAW
   );
 
-  return {
+  const buffers: Buffers = {
     position: positionBuffer,
     color: colorBuffer,
     normal: normalBuffer,
     indices: indexBuffer,
   };
-}
 
-export { initBuffers };
+  return buffers;
+}
