@@ -5,6 +5,7 @@ const DEFAULT_VIEW_OPTIONS: ViewOptions = {
   rotateX: 0,
   rotateY: 0,
   rotateZ: 0,
+  zoom: 5,
 };
 
 export function drawScene(
@@ -41,7 +42,7 @@ export function drawScene(
 
   // Now move the drawing position a bit to where we want to
   // start drawing the square.
-  mat4.translate(modelViewMatrix, modelViewMatrix, [-0.0, 0.0, -20]);
+  mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -view.zoom]);
 
   mat4.rotateZ(modelViewMatrix, modelViewMatrix, view.rotateZ);
   mat4.rotateX(modelViewMatrix, modelViewMatrix, view.rotateX);

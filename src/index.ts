@@ -6,10 +6,10 @@ import vsSource from "./shaders/vertex.glsl";
 import fsSource from "./shaders/fragment.glsl";
 import { ShaderSource } from "./types";
 import { vec4 } from "gl-matrix";
-import { Scene } from "./scene/types";
 
 import "./index.css";
 import { createCanvas } from "./elements/createCanvas";
+import { surfaceNoise } from "./effects/surfaceNoise";
 
 (function main() {
   const canvas = createCanvas();
@@ -23,8 +23,13 @@ import { createCanvas } from "./elements/createCanvas";
     type: "sphere",
     radius: 1,
     color: vec4.fromValues(1.0, 1.0, 1.0, 1.0),
-    horizontalSegments: 20,
-    verticalSegments: 20,
+    horizontalSegments: 100,
+    verticalSegments: 100,
+  });
+
+  model.positions = surfaceNoise(model.positions, {
+    amplitude: 2,
+    normals: model.normals,
   });
 
   const scene = initScene(canvas, shaders, model, {
@@ -40,6 +45,7 @@ import { createCanvas } from "./elements/createCanvas";
         rotateX: rotateVertical,
         rotateY: -rotateHorizontal,
         rotateZ: 0,
+        zoom: 5,
       });
     });
   });

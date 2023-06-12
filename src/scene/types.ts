@@ -15,6 +15,7 @@ export interface ViewOptions {
   rotateX: number;
   rotateY: number;
   rotateZ: number;
+  zoom: number;
 }
 
 export interface ProgramInfo {
