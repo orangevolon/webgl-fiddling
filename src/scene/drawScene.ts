@@ -1,5 +1,5 @@
 import { mat4 } from "gl-matrix";
-import { Buffers, ProgramInfo, Scene, ViewOptions } from "../types";
+import { Buffers, ProgramInfo, Scene, ViewOptions } from "./types";
 
 export function drawScene(scene: Scene, view: ViewOptions) {
   const { gl, programInfo, buffers, size } = scene;

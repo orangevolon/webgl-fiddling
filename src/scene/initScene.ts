@@ -1,6 +1,7 @@
-import { Model, ProgramInfo, Scene, ShaderSource } from "../types";
+import { Model, ShaderSource } from "../types";
 import { initBuffers } from "./initBuffers";
 import { initShader } from "./initShaders";
+import { ProgramInfo, Scene } from "./types";
 
 export function initScene(
   canvas: HTMLCanvasElement,

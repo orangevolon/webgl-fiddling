@@ -1,4 +1,5 @@
-import { Buffers, Model } from "../types";
+import { Model } from "../types";
+import { Buffers } from "./types";
 
 export function initBuffers(gl: WebGLRenderingContext, model: Model) {
   const positionBuffer = gl.createBuffer();

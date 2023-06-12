@@ -4,8 +4,9 @@ import { createModel } from "./models/createModel";
 
 import vsSource from "./shaders/vertex.glsl";
 import fsSource from "./shaders/fragment.glsl";
-import { Scene, ShaderSource } from "./types";
+import { ShaderSource } from "./types";
 import { vec4 } from "gl-matrix";
+import { Scene } from "./scene/types";
 
 const startTime = Date.now();
 
