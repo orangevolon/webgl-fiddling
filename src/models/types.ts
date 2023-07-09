@@ -8,6 +8,8 @@ interface ModelBaseParams {
 export interface SphereModelParams extends ModelBaseParams {
   type: "sphere";
   radius: number;
+  verticalSegments?: number;
+  horizontalSegments?: number;
 }
 
 export interface CubeModelParams extends ModelBaseParams {
