@@ -10,13 +10,9 @@ import { vec4 } from "gl-matrix";
 import "./index.css";
 import { createCanvas } from "./elements/createCanvas";
 import { surfaceNoise } from "./effects/surfaceNoise";
+import { withMouseDrag, DragEvent } from "./elements/withMouseDrag";
 
 (function main() {
-  const canvas = createCanvas();
-
-  const root = document.querySelector("#root");
-  root.appendChild(canvas);
-
   const shaders: ShaderSource = { vsSource, fsSource };
 
   const model = createModel({
@@ -33,23 +29,29 @@ import { surfaceNoise } from "./effects/surfaceNoise";
     normals: model.normals,
   });
 
+  const sceneOptions = {
+    rotateX: 0,
+    rotateY: 0,
+    rotateZ: 0,
+    zoom: 5,
+  };
+
+  const handleCanvasDrag = (event: DragEvent) => {
+    sceneOptions.rotateX = (event.deltaX / window.innerWidth) * Math.PI * 2;
+    sceneOptions.rotateY = -(event.deltaY / window.innerHeight) * Math.PI * 2;
+
+    drawScene(scene, sceneOptions);
+  };
+
+  const createCanvasWithDrag = withMouseDrag(createCanvas, handleCanvasDrag);
+  const canvas = createCanvasWithDrag();
+
+  const root = document.querySelector("#root");
+  root.appendChild(canvas);
+
   const scene = initScene(canvas, shaders, model, {
     backgroundColor: [0.0, 0.0, 0.0, 0.0],
   });
 
-  window.addEventListener("mousemove", (event: MouseEvent) => {
-    const rotateHorizontal = (event.clientX / window.innerWidth) * Math.PI * 2;
-    const rotateVertical = (event.clientY / window.innerHeight) * Math.PI * 2;
-
-    requestAnimationFrame(() => {
-      drawScene(scene, {
-        rotateX: rotateVertical,
-        rotateY: -rotateHorizontal,
-        rotateZ: 0,
-        zoom: 5,
-      });
-    });
-  });
-
-  drawScene(scene);
+  drawScene(scene, sceneOptions);
 })();

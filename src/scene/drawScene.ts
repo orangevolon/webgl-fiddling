@@ -80,11 +80,11 @@ export function drawScene(
     normalMatrix
   );
 
-  {
+  requestAnimationFrame(() => {
     const type = gl.UNSIGNED_SHORT;
     const offset = 0;
     gl.drawElements(gl.TRIANGLES, size, type, offset);
-  }
+  });
 }
 
 // Tell WebGL how to pull out the positions from the position
