@@ -1,4 +1,3 @@
-import { vec3 } from "gl-matrix";
 import { translate, rotate } from "../utils/transforms";
 import { CubeModelParams } from "./types";
 

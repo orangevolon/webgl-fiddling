@@ -17,4 +17,12 @@ export interface CubeModelParams extends ModelBaseParams {
   width: number;
 }
 
-export type ModelParams = SphereModelParams | CubeModelParams;
+export interface MeshModelParams extends ModelBaseParams {
+  type: "mesh";
+  width: number;
+  height: number;
+  horizontalSegments: number;
+  verticalSegments: number;
+}
+
+export type ModelParams = SphereModelParams | CubeModelParams | MeshModelParams;

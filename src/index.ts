@@ -20,15 +20,16 @@ import { surfaceNoise } from "./effects/surfaceNoise";
   const shaders: ShaderSource = { vsSource, fsSource };
 
   const model = createModel({
-    type: "sphere",
-    radius: 1,
+    type: "mesh",
+    width: 1,
+    height: 1,
     color: vec4.fromValues(1.0, 1.0, 1.0, 1.0),
     horizontalSegments: 100,
     verticalSegments: 100,
   });
 
   model.positions = surfaceNoise(model.positions, {
-    amplitude: 2,
+    amplitude: 0.02,
     normals: model.normals,
   });
 
