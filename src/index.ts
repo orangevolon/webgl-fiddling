@@ -24,7 +24,7 @@ const sceneInitialOptions = {
   const shaders: ShaderSource = { vsSource, fsSource };
 
   const createModelWithNoise = withNoise(createModel, {
-    amplitude: 0.1,
+    amplitude: 0.05,
   });
 
   const createCanvasWithDrag = withDragRotate(createCanvas, {
@@ -39,8 +39,8 @@ const sceneInitialOptions = {
 
   const model = createModelWithNoise({
     type: "mesh",
-    width: 1,
-    height: 1,
+    width: 2,
+    height: 2,
     color: vec4.fromValues(1.0, 1.0, 1.0, 1.0),
     horizontalSegments: 100,
     verticalSegments: 100,

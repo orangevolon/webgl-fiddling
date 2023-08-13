@@ -1,4 +1,4 @@
-import { mapToRange } from "../utils/transforms";
+import { mapToRange } from "../utils/scalar";
 import { ElementBuilder } from "./types";
 import { withMouseDrag, DragEvent } from "./withMouseDrag";
 

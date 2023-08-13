@@ -31,20 +31,14 @@ export function rotate(vertices: vec3[], params: RotateParams) {
   }
 }
 
-type MapToRangeParams = {
-  min?: number;
-  max: number;
-  newMin?: number;
-  newMax: number;
-};
+export function getMean(vectors: vec3[]) {
+  const mean = vec3.create();
 
-export function mapToRange(value: number, params: MapToRangeParams) {
-  const { min = 0, max, newMin = 0, newMax } = params;
+  vectors.forEach((vector) => {
+    vec3.add(mean, mean, vector);
+  });
 
-  const targetRange = newMax - newMin;
-  const valueRange = max - min;
-  const valueScaled = (value - min) / valueRange;
-  const targetScaled = valueScaled * targetRange;
+  vec3.scale(mean, mean, 1 / vectors.length);
 
-  return targetScaled + newMin;
+  return mean;
 }
