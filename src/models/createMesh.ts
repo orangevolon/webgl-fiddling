@@ -1,11 +1,12 @@
+import { vec3, vec4 } from "gl-matrix";
 import { Model } from "../types";
 import { MeshModelParams } from "./types";
 
 export function createMesh(params: MeshModelParams): Model {
-  const positions: number[][] = [];
-  const colors: number[][] = [];
-  const normals: number[][] = [];
-  const indices: number[][] = [];
+  const positions: vec3[] = [];
+  const colors: vec4[] = [];
+  const normals: vec3[] = [];
+  const indices: number[] = [];
 
   const horizontalSegmentLength = params.width / params.horizontalSegments;
   const horizontalSegmentOffset = params.width / 2;
@@ -13,7 +14,7 @@ export function createMesh(params: MeshModelParams): Model {
   const verticalSegmentLength = params.height / params.verticalSegments;
   const verticalSegmentOffset = params.height / 2;
 
-  const normal = [0, 0, 1];
+  const normal = vec3.fromValues(0, 0, 1);
 
   for (let horSegIdx = 0; horSegIdx < params.horizontalSegments; horSegIdx++) {
     for (let verSegIdx = 0; verSegIdx < params.verticalSegments; verSegIdx++) {
@@ -21,8 +22,9 @@ export function createMesh(params: MeshModelParams): Model {
       const y = verSegIdx * verticalSegmentLength - verticalSegmentOffset;
       const z = 0;
 
-      positions.push([x, y, z]);
-      colors.push(Array.from(params.color));
+      const vertex = vec3.fromValues(x, y, z);
+      positions.push(vertex);
+      colors.push(params.color);
       normals.push(normal);
 
       // start from the second row and column
@@ -41,15 +43,15 @@ export function createMesh(params: MeshModelParams): Model {
           vertexIndex - 1,
         ];
 
-        indices.push(vertexIndices);
+        indices.push(...vertexIndices);
       }
     }
   }
 
   return {
-    colors: colors.flat(),
-    indices: indices.flat(),
-    normals: normals.flat(),
-    positions: positions.flat(),
+    colors,
+    indices,
+    normals,
+    positions,
   };
 }

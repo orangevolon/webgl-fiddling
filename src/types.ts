@@ -1,8 +1,10 @@
+import { vec3, vec4 } from "gl-matrix";
+
 export interface Model {
-  positions: number[];
+  positions: vec3[];
   indices: number[];
-  colors: number[];
-  normals: number[];
+  colors: vec4[];
+  normals: vec3[];
 }
 
 export interface ShaderSource {

@@ -1,6 +1,7 @@
 import { vec3 } from "gl-matrix";
 import { translate, rotate } from "../utils/transforms";
 import { CubeModelParams } from "./types";
+import { Model } from "../types";
 
 export function createBox({ width, color }: CubeModelParams) {
   const faces = Array(6)
@@ -47,14 +48,10 @@ export function createBox({ width, color }: CubeModelParams) {
     return sideIndices.map((i) => i + base);
   });
 
-  const vertices = faces.flat();
-
-  // TODO: fix this later
-  const positions = vertices.flat().map((v) => Number(v));
-  const colors = vertices.flatMap(() => Array.from(color));
-
-  // TODO: temporary normal, fix this
+  const positions = faces.flat();
+  const colors = positions.map(() => color);
   const normals = positions;
+  const model: Model = { positions, indices, colors, normals };
 
-  return { positions, indices, colors, normals };
+  return model;
 }

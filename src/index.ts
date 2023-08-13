@@ -9,8 +9,8 @@ import { vec4 } from "gl-matrix";
 
 import "./index.css";
 import { createCanvas } from "./elements/createCanvas";
-import { surfaceNoise } from "./effects/surfaceNoise";
 import { withDragRotate } from "./elements/withDragRotate";
+import { withNoise } from "./hofs/withModelNoise";
 
 const sceneInitialOptions = {
   rotateX: 0,
@@ -23,18 +23,8 @@ const sceneInitialOptions = {
 (function main() {
   const shaders: ShaderSource = { vsSource, fsSource };
 
-  const model = createModel({
-    type: "mesh",
-    width: 1,
-    height: 1,
-    color: vec4.fromValues(1.0, 1.0, 1.0, 1.0),
-    horizontalSegments: 100,
-    verticalSegments: 100,
-  });
-
-  model.positions = surfaceNoise(model.positions, {
-    amplitude: 0.02,
-    normals: model.normals,
+  const createModelWithNoise = withNoise(createModel, {
+    amplitude: 0.1,
   });
 
   const createCanvasWithDrag = withDragRotate(createCanvas, {
@@ -45,6 +35,15 @@ const sceneInitialOptions = {
         rotateY,
       });
     },
+  });
+
+  const model = createModelWithNoise({
+    type: "mesh",
+    width: 1,
+    height: 1,
+    color: vec4.fromValues(1.0, 1.0, 1.0, 1.0),
+    horizontalSegments: 100,
+    verticalSegments: 100,
   });
 
   const canvas = createCanvasWithDrag();
