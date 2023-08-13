@@ -10,7 +10,15 @@ import { vec4 } from "gl-matrix";
 import "./index.css";
 import { createCanvas } from "./elements/createCanvas";
 import { surfaceNoise } from "./effects/surfaceNoise";
-import { withMouseDrag, DragEvent } from "./elements/withMouseDrag";
+import { withDragRotate } from "./elements/withDragRotate";
+
+const sceneInitialOptions = {
+  rotateX: 0,
+  rotateY: 0,
+  rotateZ: 0,
+  zoom: 5,
+  backgroundColor: vec4.fromValues(0.0, 0.0, 0.0, 0.0),
+};
 
 (function main() {
   const shaders: ShaderSource = { vsSource, fsSource };
@@ -29,29 +37,24 @@ import { withMouseDrag, DragEvent } from "./elements/withMouseDrag";
     normals: model.normals,
   });
 
-  const sceneOptions = {
-    rotateX: 0,
-    rotateY: 0,
-    rotateZ: 0,
-    zoom: 5,
-  };
+  const createCanvasWithDrag = withDragRotate(createCanvas, {
+    onRotate: ({ rotateX, rotateY }) => {
+      drawScene(scene, {
+        ...sceneInitialOptions,
+        rotateX,
+        rotateY,
+      });
+    },
+  });
 
-  const handleCanvasDrag = (event: DragEvent) => {
-    sceneOptions.rotateX = (event.deltaX / window.innerWidth) * Math.PI * 2;
-    sceneOptions.rotateY = -(event.deltaY / window.innerHeight) * Math.PI * 2;
-
-    drawScene(scene, sceneOptions);
-  };
-
-  const createCanvasWithDrag = withMouseDrag(createCanvas, handleCanvasDrag);
   const canvas = createCanvasWithDrag();
 
   const root = document.querySelector("#root");
   root.appendChild(canvas);
 
   const scene = initScene(canvas, shaders, model, {
-    backgroundColor: [0.0, 0.0, 0.0, 0.0],
+    backgroundColor: sceneInitialOptions.backgroundColor,
   });
 
-  drawScene(scene, sceneOptions);
+  drawScene(scene, sceneInitialOptions);
 })();

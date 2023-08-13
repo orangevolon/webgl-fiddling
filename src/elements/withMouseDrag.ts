@@ -5,9 +5,15 @@ export interface DragEvent {
   deltaY: number;
 }
 
+export interface DragEvents {
+  onDrag: (dragEvent: DragEvent, mouseEvent: MouseEvent) => void;
+  onDragStart?: (mouseEvent: MouseEvent) => void;
+  onDragEnd?: (mouseEvent: MouseEvent) => void;
+}
+
 export function withMouseDrag<T extends HTMLElement>(
   elementBuilder: ElementBuilder<T>,
-  onDrag: (dragEvent: DragEvent, mouseEvent: MouseEvent) => void
+  { onDrag, onDragStart, onDragEnd }: DragEvents
 ): ElementBuilder<T> {
   return () => {
     const element = elementBuilder();
@@ -23,11 +29,15 @@ export function withMouseDrag<T extends HTMLElement>(
       isDragging = true;
       mouseDownX = event.clientX;
       mouseDownY = event.clientY;
+
+      onDragStart?.(event);
     });
 
-    element.addEventListener("mouseup", () => {
+    element.addEventListener("mouseup", (event) => {
       element.style.cursor = "grab";
       isDragging = false;
+
+      onDragEnd?.(event);
     });
 
     element.addEventListener("mousemove", (event) => {
