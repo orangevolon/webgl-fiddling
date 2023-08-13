@@ -1,4 +1,4 @@
-import { vec3 } from "gl-matrix";
+import { vec3, vec4 } from "gl-matrix";
 import { SphereModelParams } from "./types";
 import { Model } from "../types";
 
@@ -14,10 +14,10 @@ export function createSphere({
   const phiCount = horizontalSegments;
   const thetaCount = verticalSegments;
 
-  const vertices = [];
-  const indices = [];
-  const colors = [];
-  const normals = [];
+  const positions: vec3[] = [];
+  const indices: number[] = [];
+  const colors: vec4[] = [];
+  const normals: vec3[] = [];
 
   for (let thetaIndex = 0; thetaIndex < thetaCount; thetaIndex++) {
     const maxThetaIndex = thetaCount - 1;
@@ -31,9 +31,9 @@ export function createSphere({
       const x = phiRadius * Math.cos(phi);
       const y = phiRadius * Math.sin(phi);
 
-      const vertex = [x, y, z];
-      vertices.push(vertex);
-      colors.push(Array.from(color));
+      const vertex = vec3.fromValues(x, y, z);
+      positions.push(vertex);
+      colors.push(color);
 
       const normal: vec3 = [x, y, z];
       vec3.normalize(normal, normal);
@@ -58,16 +58,16 @@ export function createSphere({
           bottomRightVertexIndex,
         ];
 
-        indices.push(firstTriangle, secondTriangle);
+        indices.push(...firstTriangle, ...secondTriangle);
       }
     }
   }
 
   const model: Model = {
-    positions: vertices.flat(),
-    indices: indices.flat(),
-    colors: colors.flat(),
-    normals: normals.flat(),
+    positions,
+    indices,
+    colors,
+    normals,
   };
 
   return model;

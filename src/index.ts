@@ -9,46 +9,51 @@ import { vec4 } from "gl-matrix";
 
 import "./index.css";
 import { createCanvas } from "./elements/createCanvas";
-import { surfaceNoise } from "./effects/surfaceNoise";
+import { withDragRotate } from "./elements/withDragRotate";
+import { withNoise } from "./hofs/withModelNoise";
+
+const sceneInitialOptions = {
+  rotateX: 0,
+  rotateY: 0,
+  rotateZ: 0,
+  zoom: 5,
+  backgroundColor: vec4.fromValues(0.0, 0.0, 0.0, 0.0),
+};
 
 (function main() {
-  const canvas = createCanvas();
-
-  const root = document.querySelector("#root");
-  root.appendChild(canvas);
-
   const shaders: ShaderSource = { vsSource, fsSource };
 
-  const model = createModel({
-    type: "sphere",
-    radius: 1,
+  const createModelWithNoise = withNoise(createModel, {
+    amplitude: 0.05,
+  });
+
+  const createCanvasWithDrag = withDragRotate(createCanvas, {
+    onRotate: ({ rotateX, rotateY }) => {
+      drawScene(scene, {
+        ...sceneInitialOptions,
+        rotateX,
+        rotateY,
+      });
+    },
+  });
+
+  const model = createModelWithNoise({
+    type: "mesh",
+    width: 2,
+    height: 2,
     color: vec4.fromValues(1.0, 1.0, 1.0, 1.0),
     horizontalSegments: 100,
     verticalSegments: 100,
   });
 
-  model.positions = surfaceNoise(model.positions, {
-    amplitude: 2,
-    normals: model.normals,
-  });
+  const canvas = createCanvasWithDrag();
+
+  const root = document.querySelector("#root");
+  root.appendChild(canvas);
 
   const scene = initScene(canvas, shaders, model, {
-    backgroundColor: [0.0, 0.0, 0.0, 0.0],
+    backgroundColor: sceneInitialOptions.backgroundColor,
   });
 
-  window.addEventListener("mousemove", (event: MouseEvent) => {
-    const rotateHorizontal = (event.clientX / window.innerWidth) * Math.PI * 2;
-    const rotateVertical = (event.clientY / window.innerHeight) * Math.PI * 2;
-
-    requestAnimationFrame(() => {
-      drawScene(scene, {
-        rotateX: rotateVertical,
-        rotateY: -rotateHorizontal,
-        rotateZ: 0,
-        zoom: 5,
-      });
-    });
-  });
-
-  drawScene(scene);
+  drawScene(scene, sceneInitialOptions);
 })();
