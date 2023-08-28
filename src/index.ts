@@ -24,7 +24,7 @@ const sceneInitialOptions = {
   const shaders: ShaderSource = { vsSource, fsSource };
 
   const createModelWithNoise = withNoise(createModel, {
-    amplitude: 0.05,
+    amplitude: 0.01,
   });
 
   const createCanvasWithDrag = withDragRotate(createCanvas, {

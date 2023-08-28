@@ -1,6 +1,7 @@
 import { vec3 } from "gl-matrix";
 import { getMean } from "./vector";
 
+// This function has problem understanding the general direction of facets
 export function getSurfaceNormals(positions: vec3[], indices: number[]) {
   const verticesNormals: vec3[][] = Array(positions.length);
 
@@ -62,10 +63,20 @@ export function addSurfaceNoise(vertices: vec3[], params: surfaceNoiseParams) {
     const vertex = vertices[i];
     const normal = params.normals[i];
 
-    const noise = params.amplitude * (Math.random() - 0.5);
+    const noise = gaussianRandom(0, params.amplitude);
     const noiseVector = vec3.create();
     vec3.scale(noiseVector, normal, noise);
 
     vec3.add(vertex, vertex, noiseVector);
   }
+}
+
+// Standard Normal variate using Box-Muller transform.
+export function gaussianRandom(mean = 0, stdev = 1) {
+  const u = 1 - Math.random(); // Converting [0,1) to (0,1]
+  const v = Math.random();
+  const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+
+  // Transform to the desired mean and standard deviation:
+  return z * stdev + mean;
 }
